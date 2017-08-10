@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: logspout
+spec:
+  template:
+    metadata:
+      labels:
+        name: logspout
+    spec:
+      hostPID: true
+      hostIPC: true
+      hostNetwork: true
+      containers:
+        - resources:
+            requests:
+              cpu: 0.15
+          securityContext:
+            privileged: true
+          env:
+            - name: ROUTE_URIS
+              value: raw+tcp://ec2-54-76-214-115.eu-west-1.compute.amazonaws.com:7651
+          image: gliderlabs/logspout
+          name: logspout
+          volumeMounts:
+            - name: log
+              mountPath: /var/run/docker.sock
+      volumes:
+        - name: log
+          hostPath:
+              path: /var/run/docker.sock

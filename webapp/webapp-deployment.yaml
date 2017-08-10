@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sample-web-service
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: sample-web-service 
+    spec:
+      containers:
+      - name: sample-web-service 
+        image: jcorral/sample-web-service:v1
+        ports:
+        - containerPort: 5000 
+        livenessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5 
+
+
